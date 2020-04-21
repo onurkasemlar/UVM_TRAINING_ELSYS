@@ -25,7 +25,7 @@ class my_lab1_uvc_item extends uvm_sequence_item;
   rand delay_kind_e delay_kind;  
    
   // registration macro
-    `uvm_object_utils_begin(training_uvc_item)
+  `uvm_object_utils_begin(training_uvc_item)
   	`uvm_field_int(paddr, UVM_DEFAULT)
   	`uvm_field_int(pwdata, UVM_DEFAULT)
   	`uvm_field_int(prdata, UVM_DEFAULT)
@@ -40,7 +40,7 @@ class my_lab1_uvc_item extends uvm_sequence_item;
   					        {
                       //Implement a delay ‘knob’ which you can later use to delay transaction in driver
                       (delay_kind == ZERO )  -> delay == 0;
-                      (delay_kind == SHORT)  -> delay inside{[1:10]};
+                      (delay_kind == SHORT)  -> delay inside{[0:10]};
                       //Delay should be random value of  0 - 10 pclks
                   		soft delay >= 0;        
                   		soft delay <=10;     
@@ -76,10 +76,11 @@ endclass : my_lab1_uvc_item
 *******************************************************************************/
 class my_lab1_noDelay_uvc_item extends my_lab1_uvc_item;
 
-    `uvm_component_utils(my_lab1_noDelay_uvc_item)   
-    
-    super.delay_kind.rand_mode(0);
-    super.delay_kind == ZERO;
+    //uvm_object not component!
+    `uvm_object_utils(my_lab1_noDelay_uvc_item)   
+
+    delay_kind.rand_mode(0);
+    delay_kind == ZERO;
 
     function my_lab1_noDelay_uvc_item::new(string name = "my_lab1_noDelay_uvc_item");
         super.new(name);

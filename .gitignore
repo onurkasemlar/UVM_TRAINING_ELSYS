@@ -2,3 +2,5 @@
 
 !.gitignore
 !*.sv
+!dump.tcl
+!dump.vcd

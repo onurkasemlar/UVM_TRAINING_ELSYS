@@ -94,6 +94,6 @@ function void test_training_uvc_example::set_default_configuration();
   
   // redefine configuration
   // TODO TODO TODO ???
-endfunction : set_configuration
+endfunction : set_default_configuration
 
 `endif // TEST_TRAINING_UVC_EXAMPLE_SV

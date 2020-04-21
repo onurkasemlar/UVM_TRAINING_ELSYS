@@ -75,6 +75,6 @@ function void test_training_uvc_base::set_default_configuration();
   m_cfg.m_training_uvc_cfg.m_agent_cfg.m_is_active = UVM_ACTIVE;
   m_cfg.m_training_uvc_cfg.m_agent_cfg.m_has_checks = 1;
   m_cfg.m_training_uvc_cfg.m_agent_cfg.m_has_coverage = 1;
-endfunction : set_configuration
+endfunction : set_default_configuration
 
 `endif // TEST_TRAINING_UVC_BASE_SV

@@ -58,7 +58,7 @@ class training_uvc_item extends uvm_sequence_item;
   					        {
                       //Implement a delay ‘knob’ which you can later use to delay transaction in driver
                       (delay_kind == ZERO )  -> delay == 0;
-                      (delay_kind == SHORT)  -> delay inside{[1:10]};
+                      (delay_kind == SHORT)  -> delay inside{[0:10]};
                       //Delay should be random value of  0 - 10 pclks
                   		soft delay >= 0;        
                   		soft delay <=10;     
@@ -67,7 +67,7 @@ class training_uvc_item extends uvm_sequence_item;
                     {
                       //paddr should be byte address but word aligned (1 word is 4 bytes, think of writing/reading 4 bytes at once to/from byte memory)
                       paddr[1:0] == 2'b00;   
-                      paddr >= 32'h0;
+                      paddr >  32'h0;
                       paddr <= 32'hFFFF_FFFF;  
                     }
   constraint write_c
@@ -103,21 +103,14 @@ endfunction : new
 *  Create a new class of items that will be always have data that is odd
 **************************************************************************/
 
-class onur_oddData_uvc_item extends training_uvc_item;
-  
-  `uvm_object_utils_begin(onur_oddData_uvc_item)
-  	`uvm_field_int(paddr, UVM_DEFAULT)
-  	`uvm_field_int(pwdata, UVM_DEFAULT)
-  	`uvm_field_int(prdata, UVM_DEFAULT)
-  	`uvm_field_int(delay, UVM_DEFAULT)
-    `uvm_field_enum(pwrite_op_e, pwrite, UVM_DEFAULT)
-    `uvm_field_enum(delay_kind_e, delay_kind, UVM_DEFAULT)
-  `uvm_object_utils_end
+class onur_oddData_uvc_item extends training_uvc_item;  
+ // registration macro
+  `uvm_object_utils(onur_oddData_uvc_item)
 
  constraint pwdata_c
                     {
                       //Create a new class of items that will be always have data that is odd
-                      (pwdata %2 == 0);     
+                      (pwdata %2 == 1);     
                     }
 
 
