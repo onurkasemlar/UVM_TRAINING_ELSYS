@@ -18,15 +18,32 @@ class test_training_uvc_example extends test_training_uvc_base;
   
   // registration macro
   `uvm_component_utils(test_training_uvc_example)
-  
-  // fields
-  int num_of_trans = 10;
 
+  // fields
+  int num_of_trans = 25;
+  rand bit[31:0]    t_pwdata;
+
+/*************************************************************************
+*  PPT3 - LAB2 
+*  Bonus:
+*    From dedicated test (test_training_uvc_example.sv ) send 25 simplified 
+*    APB protocol write transactions to the DUT with pwdata containing 
+*    only hex number letters (i.e. A,B,C,D,E,F)
+**************************************************************************/
+  
+  constraint t_pwdata_c
+                    {
+                      t_pwdata >= 32'hA;
+                      t_pwdata <= 32'hF;
+                    }
   // sequences
   training_uvc_seq m_seq;
+  //m_wr_uvc_seq m_seq;
 
   // constructor
   extern function new(string name, uvm_component parent);
+  // build phase
+  extern function void build_phase(uvm_phase phase);
   // run phase
   extern virtual task run_phase(uvm_phase phase);
   // set default configuration
@@ -39,6 +56,12 @@ function test_training_uvc_example::new(string name, uvm_component parent);
   super.new(name, parent);
 endfunction : new
 
+// build phase
+function void test_training_uvc_example::build_phase(uvm_phase phase);
+  super.build_phase( phase );
+  set_type_override_by_type(training_uvc_seq::get_type(), m_wr_uvc_seq::get_type());
+endfunction : build_phase
+
 // run phase
 task test_training_uvc_example::run_phase(uvm_phase phase);
   super.run_phase(phase);
@@ -47,11 +70,17 @@ task test_training_uvc_example::run_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "TEST STARTED", UVM_LOW)
 
   m_seq = training_uvc_seq::type_id::create("m_seq", this);
+  //m_seq = m_wr_uvc_seq::type_id::create("m_seq", this);
 
-  for (int i=0; i<num_of_trans; i++) begin
-    if(!m_seq.randomize()) begin
+  for (int i=0; i<num_of_trans; i++) 
+  begin  
+    if(!this.randomize()) // randomize t_pwdata
+       `uvm_fatal(get_type_name(), "Failed to randomize this.")
+
+    if(!m_seq.randomize() with{m_seq.s_pwdata == t_pwdata; }) 
+    begin
       `uvm_fatal(get_type_name(), "Failed to randomize.")
-    end
+    end    
     m_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
   end
       

@@ -66,12 +66,29 @@ endtask : run_phase
 task training_uvc_driver::process_item(training_uvc_item item);
   // print item
   //TODO TODO TODO
+  `uvm_info(get_type_name(), $sformatf("Item to be driven: \n%s", item.sprint()), UVM_MEDIUM)
   
   // wait until reset is de-asserted
   // TODO TODO TODO
-  
+ // @(posedge m_vif.PRESETn)
+
+  repeat(item.delay) begin
+    @(posedge m_vif.PCLK);
+  end
+    
   // drive signals
   // TODO TODO TODO
+  m_vif.PADDR  <= item.paddr;
+  m_vif.PWRITE <= item.pwrite;
+  m_vif.PWDATA <= item.pwdata;
+  m_vif.PRDATA <= item.prdata;
+
+  // wait for ack:
+  @(posedge m_vif.PCLK && m_vif.PRESETn == 1'b1)
+  while(m_vif.PREADY==1'b0)
+      @(posedge m_vif.PCLK);
+  
+
 
 endtask : process_item
 

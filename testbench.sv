@@ -10,7 +10,7 @@
 //
 //------------------------------------------------------------------------------
 
-`ifndef TRAINING_UVC_TB_TOP_SV
+`ifndef TRAINING_UVC_TB_TOP_SV 
 `define TRAINING_UVC_TB_TOP_SV
 
 // define timescale

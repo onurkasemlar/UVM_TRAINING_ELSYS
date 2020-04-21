@@ -27,13 +27,21 @@ module dut_dummy (
 
   always @(PADDR)
   begin
-      if (PRESETn && PADDR) begin
+    if (PRESETn && PADDR) 
+    begin
       tmp_cnt  = $random();
+      
       repeat(tmp_cnt) @(posedge PCLK);
-      if (!PWRITE) PRDATA = $random();
+      
+      if (!PWRITE) 
+        PRDATA = $random();
+
       PREADY = 1'b1;
+
       @(posedge PCLK);
-      if (!PWRITE) PRDATA = 8'h00;
+      if (!PWRITE) 
+        PRDATA = 8'h00;
+        
       PREADY = 1'b0;
     end
   end
