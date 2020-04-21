@@ -102,20 +102,40 @@ endfunction : new
 *  PPT2 - LAB2
 *  Create a new class of items that will be always have data that is odd
 **************************************************************************/
-/*
+
 class onur_oddData_uvc_item extends training_uvc_item;
   
-  `uvm_component_utils(onur_oddData_uvc_item)
+  `uvm_object_utils_begin(onur_oddData_uvc_item)
+  	`uvm_field_int(paddr, UVM_DEFAULT)
+  	`uvm_field_int(pwdata, UVM_DEFAULT)
+  	`uvm_field_int(prdata, UVM_DEFAULT)
+  	`uvm_field_int(delay, UVM_DEFAULT)
+    `uvm_field_enum(pwrite_op_e, pwrite, UVM_DEFAULT)
+    `uvm_field_enum(delay_kind_e, delay_kind, UVM_DEFAULT)
+  `uvm_object_utils_end
 
  constraint pwdata_c
                     {
                       //Create a new class of items that will be always have data that is odd
-                      (super.pwdata %2 == 0);     
+                      (pwdata %2 == 0);     
                     }
 
 
    extern function new(string name = "onur_oddData_uvc_item");
 endclass : onur_oddData_uvc_item
+
+function onur_oddData_uvc_item::new(string name = "onur_oddData_uvc_item");
+  super.new(name);
+endfunction : new
+
+
+/*
+  In BUILD_PHASE:
+  set_type_override_by_type(training_uvc_item::get_type(), onur_oddData_uvc_item::get_type());
+function void test_training_uvc_example::build_phase(uvm_phase phase);
+  super.build_phase( phase );
+  set_type_override_by_type(training_uvc_item::get_type(), onur_oddData_uvc_item::get_type());
+endfunction : build_phase
 */
 
 
