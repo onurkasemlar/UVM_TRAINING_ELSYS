@@ -27,6 +27,8 @@ import training_uvc_env_top_pkg::*;
 // include tests
 `include "test_training_uvc_base.sv"
 `include "test_training_uvc_example.sv"
+`include "test_training_uvc_rd.sv"
+`include "test_training_uvc_wr"
 
 endpackage : training_uvc_test_pkg
 

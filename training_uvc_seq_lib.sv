@@ -134,6 +134,11 @@ class m_rd_uvc_seq extends training_uvc_seq;
   constraint s_pwrite_c
                     {s_pwrite == READ;}
   
+  constraint s_delay_c
+                    {
+                       s_delay_kind == ZERO;    
+                    }
+  
   // constructor
   extern function new(string name = "m_rd_uvc_seq");
   // body task

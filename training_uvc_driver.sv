@@ -77,12 +77,14 @@ task training_uvc_driver::process_item(training_uvc_item item);
   // wait until reset is de-asserted
   // TODO TODO TODO
  // @(posedge m_vif.PRESETn)
+ @(posedge m_vif.PCLK && m_vif.PRESETn == 1'b1)
+
 if (!m_cfg.is_slave) 
 begin
     repeat(item.delay) begin
       @(posedge m_vif.PCLK);
     end
-      
+
     // drive signals
     // TODO TODO TODO
     m_vif.PADDR  <= item.paddr;
@@ -94,6 +96,7 @@ begin
     @(posedge m_vif.PCLK && m_vif.PRESETn == 1'b1)
     while(m_vif.PREADY==1'b0)
         @(posedge m_vif.PCLK);
+
   
 end // if (!m_cfg.is_slave)
 
