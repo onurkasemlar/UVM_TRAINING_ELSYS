@@ -31,6 +31,7 @@ class training_uvc_monitor extends uvm_monitor;
   
   // monitor item
   training_uvc_item m_item;
+  training_uvc_item m_item_cloned;  // secure the data by cloning, so scoreboard is not affected by changes.
   
   // constructor
   extern function new(string name, uvm_component parent);
@@ -111,6 +112,7 @@ function void training_uvc_monitor::build_phase(uvm_phase phase);
   
   // create item
   m_item = training_uvc_item::type_id::create("m_item", this);
+  m_item_cloned = training_uvc_item::type_id::create("m_item_cloned", this);
 endfunction : build_phase
 
 // connect phase
@@ -181,7 +183,9 @@ task training_uvc_monitor::collect_item();
     // TODO TODO TODO
     
     // write analysis port
-    m_aport.write(m_item);  
+    // secure the data by cloning, so scoreboard is not affected by possible modifications.
+    $cast(m_item_cloned, m_item.clone());
+    m_aport.write(m_item_cloned);  
 
     //sample coverage:
     training_uvc_cg.sample();
