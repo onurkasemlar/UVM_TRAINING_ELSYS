@@ -52,55 +52,12 @@ class training_uvc_monitor extends uvm_monitor;
   // coverage groups
   // TODO TODO TODO
 
-/*************************************************************************
-*  PPT4 - LAB2 - Part II
-*      Implement coverage for simplified APB protocol (picture below):
-*      Fill TODO sections of training_uvc_monitor.sv
-*      Define transaction cover group that will cover relevant info about received transactions (ranges and/or cross coverage can be used were necessary)
-**************************************************************************/
-  covergroup training_uvc_cg;
-
-    cov_operation: coverpoint m_item.pwrite
-                  {
-                    bins pwrite_wr = {WRITE};
-                    bins pwrite_rd = {READ};
-                  }
-
-    cov_addr     : coverpoint m_item.paddr
-                  {
-                    option.auto_bin_max=32;
-                  }
-    
-    cov_op_cross_addr: cross cov_operation, cov_addr;
-
-  endgroup : training_uvc_cg 
-  
-
-  
-/*************************************************************************
-*  PPT4 - LAB2 - Part II
-*      Bonus:
-*       Define, implement and sample cover group for reset signal
-**************************************************************************/
- covergroup training_uvc_reset_cg @(posedge m_vif.PCLK);
-    cov_rst: coverpoint m_vif.PRESETn
-                  {
-                    bins rst_asserted   = {0};
-                    bins rst_deasserted = {1};
-                  }
-  endgroup : training_uvc_reset_cg 
-
-
 endclass : training_uvc_monitor
 
 // constructor
 function training_uvc_monitor::new(string name, uvm_component parent);
   super.new(name, parent);
-  // TODO TODO TODO create cover groups
-  training_uvc_cg = new();
-  training_uvc_reset_cg = new();
-  training_uvc_cg.set_inst_name("training_uvc_cg");
-  training_uvc_reset_cg.set_inst_name("training_uvc_reset_cg");
+  // TODO TODO TODO create cover groups  
 endfunction : new
 
 // build phase
@@ -187,8 +144,7 @@ task training_uvc_monitor::collect_item();
     $cast(m_item_cloned, m_item.clone());
     m_aport.write(m_item_cloned);  
 
-    //sample coverage:
-    training_uvc_cg.sample();
+    
 
   end // forever begin  
 endtask : collect_item

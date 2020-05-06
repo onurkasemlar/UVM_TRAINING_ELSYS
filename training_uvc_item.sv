@@ -25,7 +25,7 @@ class training_uvc_item extends uvm_sequence_item;
   rand bit[31:0]    paddr;
   rand bit[31:0]    pwdata;
   rand pwrite_op_e  pwrite;
-       bit[31:0]    prdata; 
+  rand bit[31:0]    prdata; // rand in slave mode 
   rand int          delay;
   rand delay_kind_e delay_kind;    
   

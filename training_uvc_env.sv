@@ -23,7 +23,8 @@ class training_uvc_env extends uvm_env;
 
   // agent instance
   training_uvc_agent m_agent;
-
+  training_uvc_agent s_agent;
+  
   training_uvc_scoreboard   m_scrb;
   
   // constructor

@@ -38,6 +38,7 @@ class test_training_uvc_example extends test_training_uvc_base;
                     }
   // sequences
   training_uvc_seq m_seq;
+  s_rspd_uvc_seq   s_seq;
   //m_wr_uvc_seq m_seq;
 
   // constructor
@@ -68,8 +69,10 @@ task test_training_uvc_example::run_phase(uvm_phase phase);
   
   phase.raise_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST STARTED", UVM_LOW)
-
-  m_seq = training_uvc_seq::type_id::create("m_seq", this);
+  if(!m_cfg.m_training_uvc_cfg.m_agent_cfg.is_slave)
+    m_seq = training_uvc_seq::type_id::create("m_seq", this);
+  else
+    s_seq = s_rspd_uvc_seq::type_id::create("s_seq", this);
   //m_seq = m_wr_uvc_seq::type_id::create("m_seq", this);
 
   for (int i=0; i<num_of_trans; i++) 
@@ -77,12 +80,23 @@ task test_training_uvc_example::run_phase(uvm_phase phase);
     if(!this.randomize()) // randomize t_pwdata
        `uvm_fatal(get_type_name(), "Failed to randomize this.")
 
-    if(!m_seq.randomize() with{m_seq.s_pwdata == t_pwdata; }) 
+    if(!m_cfg.m_training_uvc_cfg.m_agent_cfg.is_slave)
     begin
-      `uvm_fatal(get_type_name(), "Failed to randomize.")
-    end    
-    m_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
-  end
+        if(!m_seq.randomize() with{m_seq.s_pwdata == t_pwdata; }) 
+        begin
+          `uvm_fatal(get_type_name(), "Failed to randomize.")
+        end    
+        m_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
+    end //if 
+    else
+    begin
+      if(!s_seq.randomize()) 
+        begin
+          `uvm_fatal(get_type_name(), "Failed to randomize.")
+        end    
+        s_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
+    end
+  end//for 
       
   phase.drop_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST FINISHED", UVM_LOW)
@@ -92,6 +106,7 @@ endtask : run_phase
 function void test_training_uvc_example::set_default_configuration();
   super.set_default_configuration();
   
+  m_cfg.m_training_uvc_cfg.m_agent_cfg.is_slave = 0;
   // redefine configuration
   // TODO TODO TODO ???
 endfunction : set_default_configuration

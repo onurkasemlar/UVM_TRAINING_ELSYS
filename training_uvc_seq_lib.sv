@@ -154,38 +154,22 @@ endclass : m_rd_uvc_seq
 
 class s_rspd_uvc_seq extends uvm_sequence #(training_uvc_item);
     
-  // sequencer pointer macro
-  `uvm_declare_p_sequencer(training_uvc_sequencer)
-  
   // fields
-  rand bit[31:0]    s_prdata;
-       bit[31:0]    s_paddr;
-       pwrite_op_e  s_pwrite;  
-       bit          s_pready;
-  
-  rand int          s_delay;
-  rand delay_kind_e s_delay_kind;
+  rand bit[31:0]    s_prdata; 
 
   // registration macro
   `uvm_object_utils_begin(s_rspd_uvc_seq)
-  	`uvm_field_int(s_paddr, UVM_DEFAULT)     	
-    `uvm_field_int(s_delay, UVM_DEFAULT)
-    `uvm_field_int(s_prdata, UVM_DEFAULT)  
-    `uvm_field_enum(pwrite_op_e, s_pwrite, UVM_DEFAULT)
-    `uvm_field_enum(delay_kind_e, s_delay_kind, UVM_DEFAULT)
+  	`uvm_field_int(s_prdata, UVM_DEFAULT)
   `uvm_object_utils_end
+
+  
   
   // constraints
   // TODO TODO TODO
-  constraint s_delay_order_c {solve s_delay_kind before s_delay;}
-  constraint s_delay_c 
-  					        {
-                      //Implement a delay ‘knob’ which you can later use to delay transaction in driver
-                      (s_delay_kind == ZERO )  -> s_delay == 0;
-                      (s_delay_kind == SHORT)  -> s_delay inside{[0:10]};
-                      //Delay should be random value of  0 - 10 pclks
-                  		soft s_delay >= 0;        
-                  		soft s_delay <=10;     
+  constraint experimenting_s_prdata_c
+                    {                    
+                      s_prdata <= 32'hFF; 
+                      s_prdata >= 32'hFA;  
                     }
   
   // constructor
@@ -319,11 +303,7 @@ task s_rspd_uvc_seq::body();
   
   start_item(req);
   
-  if(!req.randomize() with {
-                              prdata == s_prdata;
-                              delay == s_delay;
-                              delay_kind == s_delay_kind;                              
-  }) begin
+  if(!req.randomize() with { prdata == s_prdata; }) begin
     `uvm_fatal(get_type_name(), "Failed to randomize.")
   end  
   

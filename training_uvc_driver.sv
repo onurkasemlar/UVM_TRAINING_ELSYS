@@ -46,6 +46,12 @@ endfunction : new
 // build phase
 function void training_uvc_driver::build_phase(uvm_phase phase);
   super.build_phase(phase);
+  // get configuration
+  // if(!uvm_config_db #(training_uvc_agent_cfg)::get(this, "", "m_cfg", m_cfg)) begin
+  //   `uvm_fatal(get_type_name(), "Failed to get configuration object from config DB!")
+///end else begin
+   // `uvm_info(get_type_name(), $sformatf("Configuration: \n%s", m_cfg.sprint()), UVM_HIGH)
+  //end
 endfunction : build_phase
 
 // run phase
@@ -71,24 +77,39 @@ task training_uvc_driver::process_item(training_uvc_item item);
   // wait until reset is de-asserted
   // TODO TODO TODO
  // @(posedge m_vif.PRESETn)
-
-  repeat(item.delay) begin
-    @(posedge m_vif.PCLK);
-  end
-    
-  // drive signals
-  // TODO TODO TODO
-  m_vif.PADDR  <= item.paddr;
-  m_vif.PWRITE <= item.pwrite;
-  m_vif.PWDATA <= item.pwdata;
-  m_vif.PRDATA <= item.prdata;
-
-  // wait for ack:
-  @(posedge m_vif.PCLK && m_vif.PRESETn == 1'b1)
-  while(m_vif.PREADY==1'b0)
+if (!m_cfg.is_slave) 
+begin
+    repeat(item.delay) begin
       @(posedge m_vif.PCLK);
-  
+    end
+      
+    // drive signals
+    // TODO TODO TODO
+    m_vif.PADDR  <= item.paddr;
+    m_vif.PWRITE <= item.pwrite;
+    m_vif.PWDATA <= item.pwdata;
+    m_vif.PRDATA <= item.prdata;
 
+    // wait for ack:
+    @(posedge m_vif.PCLK && m_vif.PRESETn == 1'b1)
+    while(m_vif.PREADY==1'b0)
+        @(posedge m_vif.PCLK);
+  
+end // if (!m_cfg.is_slave)
+
+else //if(m_cfg.is_slave)
+begin
+    @(posedge m_vif.PCLK && 
+              m_vif.PRESETn == 1'b1 && 
+              m_vif.PWRITE == 1'b0  &&
+              m_vif.PADDR > 32'h0)
+        m_vif.PRDATA <= item.prdata;
+        m_vif.PREADY = 1'b1;
+    @(posedge m_vif.PCLK);
+        m_vif.PRDATA <= 32'h0;
+        m_vif.PREADY = 1'b0;
+
+end
 
 endtask : process_item
 
