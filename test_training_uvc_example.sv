@@ -66,7 +66,7 @@ endfunction : build_phase
 task test_training_uvc_example::run_phase(uvm_phase phase);
   super.run_phase(phase);
   
-  uvm_test_done.raise_objection(this, get_type_name());    
+  phase.raise_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST STARTED", UVM_LOW)
 
   m_seq = training_uvc_seq::type_id::create("m_seq", this);
@@ -84,7 +84,7 @@ task test_training_uvc_example::run_phase(uvm_phase phase);
     m_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
   end
       
-  uvm_test_done.drop_objection(this, get_type_name());    
+  phase.drop_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST FINISHED", UVM_LOW)
 endtask : run_phase
 
