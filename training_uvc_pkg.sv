@@ -29,6 +29,7 @@ import uvm_pkg::*;
 `include "training_uvc_monitor.sv"
 `include "training_uvc_cov.sv"
 `include "training_uvc_agent.sv"
+`include "training_uvc_scoreboard.sv"
 `include "training_uvc_env.sv"
 `include "training_uvc_seq_lib.sv"
 

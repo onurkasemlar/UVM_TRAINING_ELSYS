@@ -23,12 +23,14 @@ class training_uvc_env extends uvm_env;
 
   // agent instance
   training_uvc_agent m_agent;
+
+  training_uvc_scoreboard   m_scrb;
   
   // constructor
   extern function new(string name, uvm_component parent);
   // build phase
   extern virtual function void build_phase(uvm_phase phase);
-  
+  extern virtual function void connect_phase(uvm_phase phase);
 endclass : training_uvc_env
 
 // constructor
@@ -50,6 +52,17 @@ function void training_uvc_env::build_phase(uvm_phase phase);
 
   // set agent configuration
   uvm_config_db#(training_uvc_agent_cfg)::set(this, "m_agent", "m_cfg", m_cfg.m_agent_cfg);
+
+  m_scrb = training_uvc_scoreboard::type_id::create("m_scrb", this);
+
 endfunction : build_phase
+
+
+// connect phase
+function void training_uvc_env::connect_phase(uvm_phase phase);
+  super.connect_phase(phase);
+ // m_scrb.m_aexport_in.connect(m_agent.m_aport);
+ m_agent.m_aport.connect(m_scrb.m_aexport_in);
+endfunction : connect_phase
 
 `endif // TRAINING_UVC_ENV_SV
