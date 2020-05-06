@@ -20,6 +20,9 @@ class training_uvc_scoreboard extends uvm_scoreboard;
     protected uvm_tlm_analysis_fifo #(training_uvc_item) m_afifo_in;
     protected uvm_tlm_analysis_fifo #(training_uvc_item) m_afifo_out;
 
+    int counter_rd;
+    int counter_wr;
+
 
 
     // constructor  
@@ -28,6 +31,7 @@ class training_uvc_scoreboard extends uvm_scoreboard;
     extern virtual function void build_phase   (uvm_phase phase);
     extern virtual function void connect_phase (uvm_phase phase);
     extern virtual task          run_phase     (uvm_phase phase);
+    extern virtual function void extract_phase (uvm_phase phase);
 
 endclass : training_uvc_scoreboard
 
@@ -79,18 +83,32 @@ task training_uvc_scoreboard::run_phase(uvm_phase phase);
     
     m_afifo_in.get(loc_item);
 
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)
-    `uvm_info(get_type_name(), "SCOREBOARD IS RUNNING!! YEEEEAAAYY!!", UVM_HIGH)
-    `uvm_info(get_type_name(), $sformatf("loc_item: \n%s", loc_item.sprint()), UVM_HIGH)
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)
-    `uvm_info(get_type_name(), "######################################", UVM_HIGH)   
+    if(loc_item.pwrite)
+      counter_wr++;
+    else if(!loc_item.pwrite)
+      counter_rd++;
+    else
+      `uvm_fatal(get_type_name(), "NOT PERMITTED OPERATION!")
+
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)
+    // `uvm_info(get_type_name(), "SCOREBOARD IS RUNNING!! YEEEEAAAYY!!", UVM_HIGH)
+    // `uvm_info(get_type_name(), $sformatf("loc_item: \n%s", loc_item.sprint()), UVM_HIGH)
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)
+    // `uvm_info(get_type_name(), "######################################", UVM_HIGH)  
+
   end
 
 endtask : run_phase
 
 
+function void training_uvc_scoreboard::extract_phase(uvm_phase phase);
+  super.extract_phase(phase);
+  
+  `uvm_info(get_type_name(), $sformatf("READ COUNTER:  %d", this.counter_rd), UVM_NONE)
+  `uvm_info(get_type_name(), $sformatf("WRITE COUNTER: %d", this.counter_wr), UVM_NONE)
+endfunction : extract_phase
 
 `endif // TRAINING_UVC_SCOREBOARD_SV
