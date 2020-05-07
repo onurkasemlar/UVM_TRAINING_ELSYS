@@ -10,6 +10,7 @@
 //
 //------------------------------------------------------------------------------
 
+//`define M2S_MODE
 
 `ifndef TRAINING_UVC_TB_TOP_SV 
 `define TRAINING_UVC_TB_TOP_SV
