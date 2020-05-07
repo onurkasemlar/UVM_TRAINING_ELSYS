@@ -100,17 +100,31 @@ begin
   
 end // if (!m_cfg.is_slave)
 
+
+
+/*
+*   SLAVE MODE
+*/
 else //if(m_cfg.is_slave)
 begin
-    @(posedge m_vif.PCLK && 
+  /*  @(posedge m_vif.PCLK && 
               m_vif.PRESETn == 1'b1 && 
-              m_vif.PWRITE == 1'b0  &&
-              m_vif.PADDR > 32'h0)
-        m_vif.PRDATA <= item.prdata;
-        m_vif.PREADY = 1'b1;
-    @(posedge m_vif.PCLK);
-        m_vif.PRDATA <= 32'h0;
-        m_vif.PREADY = 1'b0;
+              m_vif.PWRITE >= 1'b0  &&
+              m_vif.PADDR > 32'h0)*/
+    @(m_vif.PADDR)
+        repeat(item.delay) 
+        begin
+            @(posedge m_vif.PCLK);
+        end
+        
+        if(!m_vif.PWRITE)
+          m_vif.PRDATA <= item.prdata;
+
+        m_vif.PREADY <= 1'b1;       
+
+        @(posedge m_vif.PCLK);
+            m_vif.PRDATA <= 32'h0;
+            m_vif.PREADY <= 1'b0;
 
 end
 

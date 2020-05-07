@@ -18,6 +18,9 @@ class training_uvc_cfg extends uvm_object;
   // agent configuration
   training_uvc_agent_cfg m_agent_cfg;
   
+  bit has_slave;
+  bit has_scoreboard;
+
   // registration macro
   `uvm_object_utils_begin(training_uvc_cfg)
     `uvm_field_object(m_agent_cfg, UVM_ALL_ON)

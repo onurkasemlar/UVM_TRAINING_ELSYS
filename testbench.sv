@@ -10,6 +10,7 @@
 //
 //------------------------------------------------------------------------------
 
+
 `ifndef TRAINING_UVC_TB_TOP_SV 
 `define TRAINING_UVC_TB_TOP_SV
 
@@ -19,6 +20,7 @@
 `include "training_uvc_pkg.sv"
 `include "training_uvc_env_top_pkg.sv"
 `include "training_uvc_test_pkg.sv"
+
 
 module training_uvc_tb_top;
   
@@ -43,8 +45,15 @@ module training_uvc_tb_top;
   assign PADDR_tb                    = training_uvc_if_inst.PADDR;
   assign PWRITE_tb                   = training_uvc_if_inst.PWRITE;
   assign PWDATA_tb                   = training_uvc_if_inst.PWDATA;
-  assign training_uvc_if_inst.PREADY = PREADY_tb;
-  assign training_uvc_if_inst.PRDATA = PRDATA_tb;
+
+ `ifdef M2S_MODE
+      assign PREADY_tb = training_uvc_if_inst.PREADY;
+      assign PRDATA_tb = training_uvc_if_inst.PRDATA;
+  `else
+      assign training_uvc_if_inst.PREADY = PREADY_tb;
+      assign training_uvc_if_inst.PRDATA = PRDATA_tb;
+  `endif
+
 
   // DUT instance
   dut_dummy dut (
@@ -60,6 +69,7 @@ module training_uvc_tb_top;
   // configure virtual interface in DB
   initial begin : config_if_block
     uvm_config_db#(virtual training_uvc_if)::set(uvm_root::get(), "uvm_test_top.m_training_uvc_env_top.m_training_uvc_env.m_agent", "m_vif", training_uvc_if_inst);
+    uvm_config_db#(virtual training_uvc_if)::set(uvm_root::get(), "uvm_test_top.m_training_uvc_env_top.m_training_uvc_env.s_agent", "m_vif", training_uvc_if_inst);
   end
     
   // define initial clock value and generate reset

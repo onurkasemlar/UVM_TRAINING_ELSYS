@@ -31,6 +31,10 @@ import training_uvc_env_top_pkg::*;
 `include "test_training_uvc_wr.sv"
 `include "test_training_uvc_rand_rd_wr.sv"
 `include "test_training_uvc_rd_after_wr.sv"
+ `ifdef M2S_MODE
+    `include "test_training_uvc_m2s_base.sv"
+    `include "test_training_uvc_m2s_comm.sv"   // uncomment: testbench.sv -> `define M2S_MODE
+ `endif
 
 endpackage : training_uvc_test_pkg
 

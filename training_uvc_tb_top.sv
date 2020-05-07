@@ -56,6 +56,9 @@ module training_uvc_tb_top;
   // configure virtual interface in DB
   initial begin : config_if_block
     uvm_config_db#(virtual training_uvc_if)::set(uvm_root::get(), "uvm_test_top.m_training_uvc_env_top.m_training_uvc_env.m_agent", "m_vif", training_uvc_if_inst);
+    `ifdef M2S_MODE
+       uvm_config_db#(virtual training_uvc_if)::set(uvm_root::get(), "uvm_test_top.m_training_uvc_env_top.m_training_uvc_env.s_agent", "m_vif", training_uvc_if_inst);
+    `endif
   end
     
   // define initial clock value and generate reset

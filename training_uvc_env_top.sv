@@ -20,7 +20,7 @@ class training_uvc_env_top extends uvm_env;
 
   // configuration reference
   training_uvc_cfg_top m_cfg;
-    
+  training_uvc_cfg_top s_cfg;
   // component instance
   training_uvc_env m_training_uvc_env;
   
@@ -44,9 +44,17 @@ function void training_uvc_env_top::build_phase(uvm_phase phase);
   if(!uvm_config_db #(training_uvc_cfg_top)::get(this, "", "m_cfg", m_cfg)) begin
     `uvm_fatal(get_type_name(), "Failed to get configuration object from config DB!")
   end
+   `ifdef M2S_MODE
+        if(!uvm_config_db #(training_uvc_cfg_top)::get(this, "", "s_cfg", s_cfg)) begin
+          `uvm_fatal(get_type_name(), "Failed to get configuration object from config DB!")
+        end
+    `endif
 
   // set configuration
   uvm_config_db#(training_uvc_cfg)::set(this, "m_training_uvc_env", "m_cfg", m_cfg.m_training_uvc_cfg);
+  `ifdef M2S_MODE
+    uvm_config_db#(training_uvc_cfg)::set(this, "m_training_uvc_env", "s_cfg", s_cfg.m_training_uvc_cfg);
+  `endif
 
   // create component
   m_training_uvc_env = training_uvc_env::type_id::create("m_training_uvc_env", this);
