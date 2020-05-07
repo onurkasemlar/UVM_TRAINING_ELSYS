@@ -101,7 +101,7 @@ class m_wr_uvc_seq extends training_uvc_seq;
                     {
                      // PPT03_Lab2: Use additional constraints in sequence to narrow paddr signal values 
                      //to less than 32’hFF. Again observe signals on waveform
-                      s_paddr <= 32'hFF;  
+                      soft s_paddr <= 32'hFF;  
                     }
    constraint s_pwrite_c
                     {s_pwrite == WRITE;}

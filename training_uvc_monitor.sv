@@ -132,7 +132,7 @@ task training_uvc_monitor::collect_item();
 
     // print item
     // TODO TODO TODO
-    this.print_item(m_item);
+    //this.print_item(m_item); // Causes logsize issues in EDA Playground.
      `uvm_info(get_type_name(), $sformatf("MON: Transaction Counter: %d", ++tr_counter), UVM_MEDIUM)
     
 

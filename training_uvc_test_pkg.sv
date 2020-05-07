@@ -30,6 +30,7 @@ import training_uvc_env_top_pkg::*;
 `include "test_training_uvc_rd.sv"
 `include "test_training_uvc_wr.sv"
 `include "test_training_uvc_rand_rd_wr.sv"
+`include "test_training_uvc_rd_after_wr.sv"
 
 endpackage : training_uvc_test_pkg
 
