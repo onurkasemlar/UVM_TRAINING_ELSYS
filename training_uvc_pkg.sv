@@ -32,6 +32,9 @@ import uvm_pkg::*;
 `include "training_uvc_scoreboard.sv"
 `include "training_uvc_env.sv"
 `include "training_uvc_seq_lib.sv"
+`include "training_uvc_vseqr.sv"
+`include "training_uvc_vseq.sv"
+
 
 endpackage : training_uvc_pkg
 

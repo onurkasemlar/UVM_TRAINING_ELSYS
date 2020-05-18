@@ -23,12 +23,14 @@ class training_uvc_env_top extends uvm_env;
   training_uvc_cfg_top s_cfg;
   // component instance
   training_uvc_env m_training_uvc_env;
+  training_uvc_rd_wr_vseqr m_rd_wr_vseqr;
+
   
   // constructor
   extern function new(string name, uvm_component parent);
   // build phase
   extern virtual function void build_phase(uvm_phase phase);
-  
+  extern virtual function void connect_phase(uvm_phase phase);
 endclass : training_uvc_env_top
 
 // constructor
@@ -48,6 +50,7 @@ function void training_uvc_env_top::build_phase(uvm_phase phase);
         if(!uvm_config_db #(training_uvc_cfg_top)::get(this, "", "s_cfg", s_cfg)) begin
           `uvm_fatal(get_type_name(), "Failed to get configuration object from config DB!")
         end
+        m_rd_wr_vseqr = training_uvc_rd_wr_vseqr::type_id::create("m_rd_wr_vseqr", this);
     `endif
 
   // set configuration
@@ -59,5 +62,15 @@ function void training_uvc_env_top::build_phase(uvm_phase phase);
   // create component
   m_training_uvc_env = training_uvc_env::type_id::create("m_training_uvc_env", this);
 endfunction : build_phase
+
+
+// build phase
+function void training_uvc_env_top::connect_phase (uvm_phase phase);
+  super.connect_phase(phase);
+    `ifdef M2S_MODE
+        m_rd_wr_vseqr.m_seqr = m_training_uvc_env.m_agent.m_sequencer;
+        m_rd_wr_vseqr.s_seqr = m_training_uvc_env.s_agent.m_sequencer;
+    `endif
+endfunction : connect_phase 
 
 `endif // TRAINING_UVC_ENV_TOP_SV

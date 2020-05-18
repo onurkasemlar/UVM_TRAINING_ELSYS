@@ -21,11 +21,12 @@ class test_training_uvc_m2s_comm extends test_training_uvc_m2s_base;
   `uvm_component_utils(test_training_uvc_m2s_comm)
 
   // fields
-  int num_of_trans = 30;
+  int num_of_trans = 34;
 
   // sequences
-   training_uvc_seq   m_wr_seq;
-   s_rspd_uvc_seq s_rspd_seq;
+   training_uvc_rd_wr_vseq   my_rd_wr_vseq;
+   
+
   // constructor
   extern function new(string name, uvm_component parent);
   // build phase
@@ -45,6 +46,10 @@ endfunction : new
 // build phase
 function void test_training_uvc_m2s_comm::build_phase(uvm_phase phase);
   super.build_phase( phase );
+
+   my_rd_wr_vseq = training_uvc_rd_wr_vseq::type_id::create("my_rd_wr_vseq", this); 
+
+
 endfunction : build_phase
 
 // run phase
@@ -53,29 +58,11 @@ task test_training_uvc_m2s_comm::run_phase(uvm_phase phase);
   
   phase.raise_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST STARTED", UVM_LOW)
-   m_wr_seq = training_uvc_seq::type_id::create("m_wr_seq", this); 
-   s_rspd_seq = s_rspd_uvc_seq::type_id::create("s_rspd_seq", this);  
-
+   
   for (int i=0; i<num_of_trans; i++) 
-  begin  
-    if(!this.randomize()) // randomize t_pwdata
-       `uvm_fatal(get_type_name(), "Failed to randomize this.")
+      my_rd_wr_vseq.start(m_training_uvc_env_top.m_rd_wr_vseqr); 
+           
 
-    if(!m_wr_seq.randomize() && !s_rspd_seq.randomize()) 
-        begin
-          `uvm_fatal(get_type_name(), "Failed to randomize.")
-        end    
-
-    fork
-        begin
-            m_wr_seq.start(m_training_uvc_env_top.m_training_uvc_env.m_agent.m_sequencer);
-        end
-        begin
-            s_rspd_seq.start(m_training_uvc_env_top.m_training_uvc_env.s_agent.m_sequencer);
-        end
-    join
-        
-  end//for 
       
   phase.drop_objection(this, get_type_name());    
   `uvm_info(get_type_name(), "TEST FINISHED", UVM_LOW)
