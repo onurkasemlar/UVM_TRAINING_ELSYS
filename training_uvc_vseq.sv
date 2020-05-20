@@ -21,7 +21,7 @@ class training_uvc_rd_wr_vseq extends uvm_sequence #(training_uvc_item);
    s_rspd_uvc_seq     s_rspd_seq;
 
     //seqr
-   training_uvc_rd_wr_vseqr vseqr;
+   //training_uvc_rd_wr_vseqr vseqr;
 
   // constructor
   extern function new(string name = "training_uvc_rd_wr_vseq");
