@@ -31,6 +31,10 @@ interface training_uvc_if(input PCLK, input PRESETn);
   initial
     begin
       PWRITE <= 0;
+      
+      `ifdef M2S_MODE
+          PREADY <= 0;
+      `endif
     end
 
   
